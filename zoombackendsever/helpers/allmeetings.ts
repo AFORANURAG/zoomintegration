@@ -14,10 +14,9 @@ type meetingData = {
     created_at: Date,
     join_url: string,
 }
-
-
 export default async (): Promise<meetingData> => {
-    try {
+// get list of all meetings of meetings associated with tutor bin or the host or creator of the meeting.
+try {
       var data = await axios.get("https://api.zoom.us/v2/users/me/meetings/", {
         headers: {
           Authorization: `Bearer ${generateJwtToken(APIKEY, APISECRET)}`,
