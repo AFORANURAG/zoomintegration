@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { generateJwtToken } from "../helpers/generateToken"
-import { JWT } from "./environmentmodule";
-import { APIKEY } from "./environmentmodule";
-import { APISECRET } from "./environmentmodule";
+import { JWT } from "../environmentmodule";
+import { APIKEY } from "../environmentmodule";
+import { APISECRET } from "../environmentmodule";
 import axios from 'axios';
 // node js 18 introduces inbuilt fetch , but it is still very new and experimental , so we should go with a trusted fetch library.
 let token: string = generateJwtToken(APIKEY, APISECRET);
