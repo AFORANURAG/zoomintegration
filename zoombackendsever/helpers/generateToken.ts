@@ -8,4 +8,5 @@ const generateJwtToken = (APIKEY: string, APISECRET: string) => {
     const token = jwt.sign(payload, APISECRET);
     return token;
 };
+
 export { generateJwtToken }
