@@ -4,8 +4,12 @@ import { generateJwtToken } from "../helpers/generateToken"
 import { APIKEY } from "../environments/environmentmodule";
 import { APISECRET } from "../environments/environmentmodule";
 import axios from 'axios';
+import meetings from "../helpers/allmeetings";
+import meetingCreator from "../helpers/createmeeting";
 // node js 18 introduces inbuilt fetch , but it is still very new and experimental , so we should go with a trusted fetch library.
 let token: string = generateJwtToken(APIKEY, APISECRET);
+
+
 interface payload {
   name?: string,
   age?: number
@@ -13,7 +17,7 @@ interface payload {
 
 @Injectable()
 export class AppService {
- async getHello() {
+  async getHello() {
     await meetings();
     return 'Hello!';
   }
@@ -24,59 +28,35 @@ export class AppService {
       console.log(responseFromZoom);
       res.status(201).send({ message: "meeting created successfully" });
     } catch (error) {
-      console.log(`got an error while creating meeting.error is ${error}`);
+      console.log(`got an error while creating meeting.  error is ${error}`);
       res.status(500).send({ message: "server error", error: error.message })
     }
   }
   async getMeetings(req: FastifyRequest, res: FastifyReply) {
     try {
-      await meetings();
-      res.status(200).send({ message: "meeting loaded successfully" });
+     let allMeetings =  await meetings();
+      res.status(200).send({ message: "meeting loaded successfully", allMeetings});
     } catch (error) {
       console.log(`error in the get meeting service method while loading the meeting`);
+      res.status(error.str)
     }
   }
+
+
 }
 
-const meetingCreator = async (): Promise<void> => {
-  const response = await axios.post('https://api.zoom.us/v2/users/me/meetings', {
-    topic: 'Test Meeting',
-    type: 2, // Scheduled meeting
-    start_time: '2023-05-01T12:00:00Z',
-    duration: 60,
-    timezone: 'UTC',
-    settings: {
-      host_video: true,
-      participant_video: true,
-      join_before_host: true,
-      mute_upon_entry: true,
-      approval_type: 2,
-      auto_recording: 'cloud',
-      waiting_room: true,
-      registrants_email_notification: true,
-    },
-  }, {
-    headers: {
-      Authorization: `Bearer ${generateJwtToken(APIKEY, APISECRET)}`,
-      'Content-Type': 'application/json',
-    },
-  });
-  console.log(response.data);
-};
+// {
+//   uuid: 'UnvUdrmJQw+iBS3McOcRig==',
+//   id: 94680534160,
+//   host_id: 'yr3ju2B0SHS2hZTy0OMoyQ',
+//   topic: 'Test Meeting',
+//   type: 2,
+//   start_time: '2023-05-01T12:00:00Z',
+//   duration: 60,
+//   timezone: 'UTC',
+//   created_at: '2023-04-27T11:00:55Z',
+//   join_url: 'https://zoom.us/j/94680534160?pwd=SkVGMGJ6clcyQ3QrRlIvSk51ZmJ2Zz09'
+// }
 
 
 
-const meetings = async (): Promise<void> => {
-  try {
-    var data = await axios.get("https://api.zoom.us/v2/users/me/meetings/",{
-      headers: {
-        Authorization: `Bearer ${generateJwtToken(APIKEY, APISECRET)}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    // console.log(data);
-  } catch (error) {
-    console.log(`got an error while making a get request. error is ${error}`);
-  }
-  console.log("here is the meeting details",data.data.meetings);
-}
