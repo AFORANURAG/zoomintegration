@@ -14,7 +14,8 @@ interface generateSignatureProps {
 export function generateSignature(props: generateSignatureProps
 ) {
   let signature = "";
-  const { apiKey,
+  const {
+    apiKey,
     apiSecret,
     meetingNumber,
     role } = props;

@@ -19,7 +19,8 @@
     "web-vitals": "1.1.1"
   },
   "scripts": {
-    "start": "react-app-rewired start",
+    "dev": "react-app-rewired dev -p 8080",
+    "start": "react-app-rewired start --port 8080",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
